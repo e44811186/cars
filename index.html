@@ -7,5 +7,30 @@
   <style>*{margin:0;padding:0}html{scroll-behavior:smooth}body{background-color:#212121;font-family:Helvetica,sans-serif;letter-spacing:-1px;color:#fff}</style><link rel="stylesheet" href="styles.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="styles.css"></noscript></head>
   <body>
     <app-root>Loading...</app-root>
-  <script src="polyfills.js" type="module"></script><script src="main.js" type="module"></script></body>
+  <script>
+  const API_BASE = "http://localhost:8080"; // при локальной разработке
+  // после деплоя — поменяешь на адрес облака, например: https://cars-api.onrender.com
+
+  async function loadCars() {
+    const res = await fetch(`${API_BASE}/api/cars`);
+    const cars = await res.json();
+
+    const list = document.getElementById("cars-list");
+    list.innerHTML = "";
+
+    cars.forEach(c => {
+      const item = document.createElement("div");
+      item.className = "car-card";
+      item.innerHTML = `
+        <img src="${c.imageUrl}" alt="${c.brand} ${c.model}">
+        <h3>${c.brand} ${c.model} (${c.year})</h3>
+        <p>${c.description}</p>
+        <strong>$${c.price.toLocaleString()}</strong>
+      `;
+      list.appendChild(item);
+    });
+  }
+
+  loadCars();
+</script></body>
 </html>
